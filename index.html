@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Mining Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #3b3b3b;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .miner-status, .shop {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 48%;
+            text-align: center;
+        }
+
+        .miner-status h2, .shop h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .miner-status p, .shop p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .btc-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .btc-progress {
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            text-align: center;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        ul li {
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .miner-status, .shop {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bitcoin Mining Simulator</h1>
+        <p>Une simulation réaliste de minage. Les gains sont fictifs !</p>
+    </header>
+
+    <div class="container">
+        <div class="miner-status">
+            <h2>Statut du Minage</h2>
+            <p>Puissance de minage: <span id="hashrate">0 GHz</span></p>
+            <p>Gains: <span id="gains">0.0000000000000000 BTC</span></p>
+
+            <div class="btc-bar">
+                <div id="btcProgress" class="btc-progress" style="width: 0%"></div>
+            </div>
+
+            <button id="startMining">Démarrer le minage</button>
+        </div>
+
+        <div class="shop">
+            <h2>Améliorations</h2>
+            <p>Améliorez votre équipement pour miner plus vite.</p>
+            <ul>
+                <li><button onclick="buyUpgrade('asic')">Acheter un ASIC (+10 GHz)</button></li>
+                <li><button onclick="buyUpgrade('gpu')">Acheter un GPU (+2 GHz)</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Bitcoin Mining Simulator - Simulation uniquement</p>
+    </footer>
+
+    <script>
+        let hashrate = 0; // Puissance de minage en GHz
+        let earnings = 0; // Gains en BTC
+        let miningInterval;
+        let miningSpeed = 0.00000000000001; // Gains par seconde
+
+        document.getElementById('startMining').addEventListener('click', startMining);
+
+        function startMining() {
+            miningInterval = setInterval(() => {
+                earnings += miningSpeed * hashrate;
+                let percentage = Math.min(earnings * 10000000000000000, 100); // Limite à 100%
+                document.getElementById('gains').textContent = earnings.toFixed(16) + " BTC";
+                document.getElementById('btcProgress').style.width = percentage + "%";
+            }, 1000);
+
+            document.getElementById('startMining').disabled = true;
+            document.getElementById('startMining').textContent = "Minage en cours...";
+        }
+
+        function stopMining() {
+            clearInterval(miningInterval);
+            document.getElementById('startMining').disabled = false;
+            document.getElementById('startMining').textContent = "Démarrer le minage";
+        }
+
+        function buyUpgrade(type) {
+            if (type === 'asic') {
+                hashrate += 10; // ASIC augmente la puissance de minage de 10 GHz
+            } else if (type === 'gpu') {
+                hashrate += 2; // GPU augmente la puissance de minage de 2 GHz
+            }
+
+            document.getElementById('hashrate').textContent = hashrate + " GHz";
+        }
+    </script>
+</body>
+</html>
